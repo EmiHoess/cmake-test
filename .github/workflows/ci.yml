@@ -1,0 +1,31 @@
+name: C++ CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 1: Configure the build system (CMake)
+      - name: Configure CMake
+        run: cmake -S . -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release
+
+      # Step 2: Compile the code
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config Release
+
+      # Step 3: Run Tests
+      # It will run any tests defined in your CMakeLists.txt using 'add_test'
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # --output-on-failure prints the error log if a test fails
+        run: ctest --test-dir ${{github.workspace}}/build -C Debug --output-on-failure
