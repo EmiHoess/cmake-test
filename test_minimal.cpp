@@ -1,14 +1,32 @@
-#include <cstdlib>
 #include <iostream>
+#include <string>
 
-int add(int, int); // declare the function under test
+static int tests_failed = 0;
+
+void check(bool condition, const std::string& name) {
+    if (condition) {
+        std::cout << "[ OK ] " << name << "\n";
+    } else {
+        std::cout << "[FAIL] " << name << "\n";
+        tests_failed++;
+    }
+}
+
+// Example functions
+int add(int a, int b) { return a + b; }
+int sub(int a, int b) { return a - b; }
 
 int main() {
-    if (add(2, 3) != 5) {
-        std::cerr << "Test failed: add(2,3) should be 5\n";
-        return EXIT_FAILURE;
+    check(add(2, 2) == 4, "add(2,2) == 4");
+    check(add(-1, 1) == 0, "add(-1,1) == 0");
+    check(sub(5, 3) == 2, "sub(5,3) == 2");
+    check(sub(1, 3) == -3, "sub(0,3) == -3");
+
+    if (tests_failed > 0) {
+        std::cout << "\nTests FAILED: " << tests_failed << "\n";
+    } else {
+        std::cout << "\nAll tests passed!\n";
     }
 
-    std::cout << "Test passed.\n";
-    return EXIT_SUCCESS;
+    return tests_failed == 0 ? 0 : 1;
 }
